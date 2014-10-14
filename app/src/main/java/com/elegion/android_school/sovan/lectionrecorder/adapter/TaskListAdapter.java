@@ -4,7 +4,7 @@ package com.elegion.android_school.sovan.lectionrecorder.adapter;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.os.SystemClock;
+//import android.os.SystemClock;
 import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.CursorAdapter;
@@ -22,17 +22,17 @@ import java.util.Date;
  */
 public class TaskListAdapter extends ResourceCursorAdapter {
 
-    private int mSelectedId = -1;
+//    private int mSelectedId = -1;
 
     public TaskListAdapter(Context context, Cursor c) {
         super(context,  R.layout.li_item, c,
                 CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
     }
 
-    public void setSelectedId(int selectedId) {
-        mSelectedId = selectedId;
-        notifyDataSetChanged();
-    }
+//    public void setSelectedId(int selectedId) {
+//        mSelectedId = selectedId;
+//        notifyDataSetChanged();
+//    }
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
@@ -45,7 +45,6 @@ public class TaskListAdapter extends ResourceCursorAdapter {
         int isPeriodical = cursor.getInt(cursor.getColumnIndex(RecorderTask.Columns.IS_PERIODICAL));
         TextView tvPeriod = (TextView) view.findViewById(R.id.textPeriod);
         if (isPeriodical == 0) {
-            long test = System.currentTimeMillis();
             if (startTime+runningTime < System.currentTimeMillis()) {
                 tvPeriod.setTextColor(Color.RED);
                 tvPeriod.setText("One shot");

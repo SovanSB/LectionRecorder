@@ -24,9 +24,9 @@ import com.elegion.android_school.sovan.lectionrecorder.loader.AsyncTaskLoader;
 import com.elegion.android_school.sovan.lectionrecorder.receiver.TaskReceiver;
 import com.elegion.android_school.sovan.lectionrecorder.tasks.RecorderTask;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
+//import java.util.ArrayList;
+//import java.util.Calendar;
+//import java.util.Collections;
 import java.util.List;
 
 
@@ -34,7 +34,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
 
     private AlarmManager alarmMgr;
     private PendingIntent alarmIntent;
-    private List<RecorderTask> mTaskList;
+   // private List<RecorderTask> mTaskList;
 
     // Shared Preferences file name
     public static final String APP_PREFERENCES = "mysettings";
@@ -57,12 +57,6 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
         this.mListView = (ListView) findViewById(R.id.listView);
         mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
 
-//        mCursorAdapter = new SimpleCursorAdapter(this,
-//                R.layout.li_item,
-//                null,
-//                new String[]{RecorderTask.Columns.TITLE, RecorderTask.Columns.PERIOD},
-//                new int[]{R.id.textView, R.id.textView2},
-//                CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
         mTaskListAdapter = new TaskListAdapter(this, null);
         mListView.setAdapter(mTaskListAdapter);
         getLoaderManager().initLoader(R.id.recorder_manager, Bundle.EMPTY, this);
@@ -70,11 +64,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
     }
 
 
-    public void onClick(View view) {
-
-//        ContentResolver db = getContentResolver();
-//        RecorderTask value = new RecorderTask("Inserting from app", "\\tralala", "lolka", 100, 200);
-//        db.insert(RecorderTask.URI, value.toValues());
+    public void onCreateTaskClick(View view) {
         Intent intent = new Intent(this, TaskCreatorActivity.class);
         startActivityForResult(intent, R.id.DATE_TIME_SET);
 
@@ -111,10 +101,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+            return id == R.id.action_settings;
     }
 
     @Override

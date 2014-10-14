@@ -21,33 +21,8 @@ import java.io.File;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-
-
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.Environment;
-import android.text.format.DateUtils;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.Spinner;
-import android.widget.TimePicker;
-import android.widget.Toast;
-
-
 import com.elegion.android_school.sovan.lectionrecorder.R;
 import com.elegion.android_school.sovan.lectionrecorder.tasks.RecorderTask;
-
-import java.io.File;
-import java.text.NumberFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 public class TaskCreatorActivity extends Activity implements AdapterView.OnItemSelectedListener {
 
@@ -89,8 +64,6 @@ public class TaskCreatorActivity extends Activity implements AdapterView.OnItemS
         mSpinnerDuration = (Spinner) findViewById(R.id.spinnerDuration);
         mEditDuration = (EditText) findViewById(R.id.editTextDuration);
 
-//        ArrayAdapter adapter2 = new ArrayAdapter(this,
-//                android.R.layout.simple_spinner_item, array_spinner);
         mSpinnerDuration.setAdapter(adapter);
         mSpinnerDuration.setEnabled(true);
 
@@ -101,8 +74,6 @@ public class TaskCreatorActivity extends Activity implements AdapterView.OnItemS
         mDatePicker = (DatePicker) findViewById(R.id.datePicker);
         mTimePicker = (TimePicker) findViewById(R.id.timePicker);
 
-//        mSpinnerPeriod.setOnItemSelectedListener(this);
-//        mSpinnerDuration.setOnItemSelectedListener(this);
     }
 
 
@@ -119,10 +90,7 @@ public class TaskCreatorActivity extends Activity implements AdapterView.OnItemS
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        return id == R.id.action_settings;
     }
 
     @Override
@@ -204,7 +172,6 @@ public class TaskCreatorActivity extends Activity implements AdapterView.OnItemS
         String title = mEditTitle.getText().toString();
         long currentMillis = Calendar.getInstance().getTimeInMillis();
         long currentSystem = System.currentTimeMillis();
-        long diff = currentMillis - currentSystem;
         Calendar calendar = new GregorianCalendar(mDatePicker.getYear(), mDatePicker.getMonth(),
                 mDatePicker.getDayOfMonth(), mTimePicker.getCurrentHour(), mTimePicker.getCurrentMinute());
         long startTime = calendar.getTimeInMillis();
@@ -221,17 +188,9 @@ public class TaskCreatorActivity extends Activity implements AdapterView.OnItemS
         }
         if (!isPeriodical || runningTime < period) {
             RecorderTask task;
-            // "/storage/sdcard0/Recording2/"
             String root = Environment.getExternalStorageDirectory().toString();
             File folder = new File(root + "/Recordings2/");
 
-
-
-            // TODO: REPLACE THIS BICYCLE WITH NORMAL CODE!!!
-
-            if (!folder.exists()) {
-                folder.mkdir();
-            }
             task = new RecorderTask(title, 1, root + "/Recordings2/" + title + "/", title,
                     startTime, runningTime, period, isPeriodical);
             Intent intent = new Intent(this, MainActivity.class);

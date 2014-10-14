@@ -80,6 +80,12 @@ public class RecorderTask implements Serializable, Comparable {
         return values;
     }
 
+   public ContentValues startTimeToValues() {
+       final ContentValues values = new ContentValues();
+       values.put(Columns.START_TIME, mStartTime);
+       return values;
+   }
+
     public String getTitle() {
         return mTitle;
     }

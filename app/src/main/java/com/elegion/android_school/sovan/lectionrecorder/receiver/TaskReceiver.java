@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
+//import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -36,32 +37,29 @@ public class TaskReceiver extends BroadcastReceiver {
                 context.startService(serviceIntent);
             }
         } else {
-            String int_ac = intent.getAction();
-            String cont_str = context.getString(R.string.scheldure_tasks_string);
-            boolean test = intent.getAction().equals(context.getString(R.string.scheldure_tasks_string));
             if (intent.getAction().equals(context.getString(R.string.scheldure_tasks_string)))
             {
-
-//            // clear previous tasks
-//            if (mTaskList != null)
-//            for (RecorderTask task : mTaskList) {
-//                Intent taskIntent = new Intent(context, TaskReceiver.class);
-//                taskIntent.setAction(context.getString(R.string.start_service_string));
-//                PendingIntent alarmIntent = PendingIntent.getBroadcast(context, task.getId(),
-//                        taskIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-//            }
                 alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
                 manageTasks(context);
                 for (RecorderTask task : mTaskList) {
+                    // Scheduling tasks
                     Intent taskIntent = new Intent(context, TaskReceiver.class);
                     taskIntent.putExtra("task", task);
                     taskIntent.setAction(context.getString(R.string.start_service_string));
                     PendingIntent alarmIntent = PendingIntent.getBroadcast(context, task.getId(),
                             taskIntent, PendingIntent.FLAG_CANCEL_CURRENT);
                     alarmMgr.set(AlarmManager.RTC_WAKEUP, task.getStartTime(), alarmIntent);
+                    // Changing startTime in database
+                    if (task.isPeriodical()) {
+                        ContentResolver db = context.getContentResolver();
+
+                    // TODO: Ask, whether it is normal method to update or not:)
+                        db.update(RecorderTask.URI, task.startTimeToValues(), RecorderTask.Columns.ID + "=?",
+                                new String[]{Integer.toString(task.getId())});
+                    }
                 }
 
-                  Toast.makeText(context, "Tasks schelduled", Toast.LENGTH_SHORT).show();
+                  Toast.makeText(context, "Tasks scheduled", Toast.LENGTH_SHORT).show();
             }
             else
             if (intent.getAction().equals(context.getString(R.string.stop_all_tasks))) {

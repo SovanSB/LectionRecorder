@@ -17,25 +17,19 @@ import com.elegion.android_school.sovan.lectionrecorder.tasks.RecorderTask;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
+
 import java.util.Collections;
 import java.util.Date;
-import java.util.Formatter;
-import java.util.GregorianCalendar;
+//import java.util.Formatter;
+//import java.util.GregorianCalendar;
+//import java.util.Calendar;
+//import java.util.Collection;
+//import java.lang.reflect.Array;
 import java.util.Timer;
 import java.util.TimerTask;
 
-/**
- * An {@link IntentService} subclass for handling asynchronous task requests in
- * a service on a separate handler thread.
- * <p>
- * TODO: Customize class - update intent actions, extra parameters and static
- * helper methods.
- */
 public class RecorderIntentService extends IntentService {
 
     RecorderTask mTask;
@@ -54,12 +48,6 @@ public class RecorderIntentService extends IntentService {
         super("RecorderIntentService");
     }
 
-
-    /**
-     * Creates an IntentService.  Invoked by your subclass's constructor.
-     *
-     * @param name Used to name the worker thread, important only for debugging.
-     */
     public RecorderIntentService(String name) {
         super(name);
     }
@@ -89,7 +77,7 @@ public class RecorderIntentService extends IntentService {
             boolean success = (mTask.getStartTime() <= System.currentTimeMillis()) &&
                     (mTask.getStartTime() + mTask.getRunningTime() >= System.currentTimeMillis());
             if (!folder.exists()) {
-                success = success && folder.mkdir();
+                success = success && folder.mkdirs();
             }
             if (success) {
                 String mFileName;
@@ -100,8 +88,6 @@ public class RecorderIntentService extends IntentService {
                     mFileName = mTask.getPath() + mTask.getFileName();// + "." + ext;
                     if (!mTask.isNumeric())
                         mFileName = mFileName + calendarToString() + "." + ext;
-
-
 
                     if (mRecorder == null) {
 
@@ -215,14 +201,6 @@ public class RecorderIntentService extends IntentService {
     private String calendarToString() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MMM-dd_HH.mm.ss");
         return dateFormat.format(new Date());
-//        Calendar cal = Calendar.getInstance();
-//
-//
-//
-//        String result = "-" + cal.get(Calendar.HOUR_OF_DAY) + "." + cal.get(Calendar.MINUTE) + "_" +
-//                cal.get(Calendar.DAY_OF_MONTH)+ "-" + (cal.get(Calendar.MONTH) + 1) + "-" +
-//                cal.get(Calendar.YEAR);
-//        return result;
     }
 
 }

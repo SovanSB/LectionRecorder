@@ -22,7 +22,7 @@
         android:id="@+id/button"
         android:layout_alignParentTop="true"
 
-        android:onClick="onClick"/>
+        android:onClick="onCreateTaskClick"/>
 
     <Button
         android:layout_width="wrap_content"
