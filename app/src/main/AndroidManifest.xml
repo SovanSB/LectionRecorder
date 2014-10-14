@@ -1,0 +1,41 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.elegion.android_school.sovan.lectionrecorder">
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <application android:allowBackup="true"
+        android:label="@string/app_name"
+        android:icon="@drawable/ic_launcher"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".activity.MainActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+
+
+        <receiver android:name=".receiver.TaskReceiver" />
+
+        <provider
+            android:name=".sqlite.SQLiteProvider"
+            android:authorities="com.elegion.android_school.sovan.lectionrecorder" />
+
+        <service
+            android:name=".services.RecorderIntentService"
+            android:exported="false" >
+        </service>
+
+        <activity
+            android:name=".activity.TaskCreatorActivity"
+            android:label="@string/title_activity_task_creator_activity" >
+
+        </activity>
+    </application>
+
+</manifest>

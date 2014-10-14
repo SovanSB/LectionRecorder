@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:orientation="vertical"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:text="Title"
+            android:ems="10"
+            android:id="@+id/editTitle"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.5"/>
+
+        <DatePicker
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/datePicker"
+            android:layout_gravity="center_horizontal"
+            android:calendarViewShown="false"
+            android:layout_weight="1"
+            android:spinnersShown="true"/>
+
+        <TimePicker
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/timePicker"
+            android:layout_gravity="center_horizontal"
+            android:accessibilityLiveRegion="none"
+            style="@style/AppBaseTheme"
+            android:theme="@style/AppTheme"
+            android:layout_weight="1"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <RadioGroup
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="One shot"
+                    android:onClick="onRadioButtonClick"
+                    android:checked="true"
+                    android:id="@+id/radioOneShot"/>
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Periodical"
+                    android:onClick="onRadioButtonClick"
+                    android:id="@+id/radioPeriodical"/>
+
+            </RadioGroup>
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberSigned"
+                android:ems="10"
+                android:enabled="false"
+                android:id="@+id/editTextPeriod"
+                android:layout_weight="1"/>
+
+            <Spinner
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinnerPeriod"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Duration:"
+                android:layout_weight="1"/>
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberSigned"
+                android:ems="10"
+                android:enabled="true"
+                android:id="@+id/editTextDuration"
+                android:layout_weight="1"/>
+            <Spinner
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinnerDuration"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ok"
+                android:id="@+id/button"
+                android:layout_weight="1"
+                android:onClick="onOkButtonClick"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancel"
+                android:id="@+id/button3"
+                android:layout_weight="1"
+                android:onClick="onCancelButtonClick"/>
+        </LinearLayout>
+
+
+    </LinearLayout>
+</ScrollView>
