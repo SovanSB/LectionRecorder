@@ -4,10 +4,10 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
-//import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.elegion.android_school.sovan.lectionrecorder.R;
@@ -26,6 +26,8 @@ public class TaskReceiver extends BroadcastReceiver {
     static List<RecorderTask> mTaskList;
     private AlarmManager alarmMgr;
 
+    // TODO: add API lvl check to insert set/setExact
+
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(context.getString(R.string.start_service_string))) {
@@ -37,7 +39,7 @@ public class TaskReceiver extends BroadcastReceiver {
                 context.startService(serviceIntent);
             }
         } else {
-            if (intent.getAction().equals(context.getString(R.string.scheldure_tasks_string)))
+            if (intent.getAction().equals(context.getString(R.string.schedule_tasks_string)))
             {
                 alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
                 manageTasks(context);
@@ -59,7 +61,7 @@ public class TaskReceiver extends BroadcastReceiver {
                     }
                 }
 
-                  Toast.makeText(context, "Tasks scheduled", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Tasks scheduled", Toast.LENGTH_SHORT).show();
             }
             else
             if (intent.getAction().equals(context.getString(R.string.stop_all_tasks))) {
@@ -73,6 +75,19 @@ public class TaskReceiver extends BroadcastReceiver {
                             taskIntent, PendingIntent.FLAG_CANCEL_CURRENT);
                     alarmMgr.cancel(alarmIntent);
                 }
+
+            }
+            else
+            // Creates tasks after boot is completed
+            if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
+                AlarmManager alarmMgr = (AlarmManager) context.getSystemService(
+                        Context.ALARM_SERVICE);
+                Intent taskIntent = new Intent(context, TaskReceiver.class);
+                taskIntent.setAction(context.getString(R.string.schedule_tasks_string));
+                PendingIntent alarmIntent = PendingIntent.getBroadcast(context,
+                        1, taskIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, 1, alarmIntent);
+                Log.e("BOOT_COMPLETED", " successfully");
             }
         }
     }

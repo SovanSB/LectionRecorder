@@ -152,7 +152,7 @@ public class RecorderIntentService extends IntentService {
                                         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(
                                                 Context.ALARM_SERVICE);
                                         Intent taskIntent = new Intent(context, TaskReceiver.class);
-                                        taskIntent.setAction(context.getString(R.string.scheldure_tasks_string));
+                                        taskIntent.setAction(context.getString(R.string.schedule_tasks_string));
                                         PendingIntent alarmIntent = PendingIntent.getBroadcast(context,
                                                 1, taskIntent, PendingIntent.FLAG_CANCEL_CURRENT);
                                         alarmMgr.set(AlarmManager.RTC_WAKEUP, 1, alarmIntent);
@@ -184,7 +184,7 @@ public class RecorderIntentService extends IntentService {
                     AlarmManager alarmMgr = (AlarmManager) context.getSystemService(
                             Context.ALARM_SERVICE);
                     Intent taskIntent = new Intent(context, TaskReceiver.class);
-                    taskIntent.setAction(context.getString(R.string.scheldure_tasks_string));
+                    taskIntent.setAction(context.getString(R.string.schedule_tasks_string));
                     PendingIntent alarmIntent = PendingIntent.getBroadcast(context,
                             1, taskIntent, PendingIntent.FLAG_CANCEL_CURRENT);
                     alarmMgr.set(AlarmManager.RTC_WAKEUP, 1, alarmIntent);

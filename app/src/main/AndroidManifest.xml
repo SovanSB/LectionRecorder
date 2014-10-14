@@ -20,7 +20,14 @@
         </activity>
 
 
-        <receiver android:name=".receiver.TaskReceiver" />
+        <receiver android:name=".receiver.TaskReceiver"
+                  android:enabled="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            </intent-filter>
+
+        </receiver>
+
 
         <provider
             android:name=".sqlite.SQLiteProvider"

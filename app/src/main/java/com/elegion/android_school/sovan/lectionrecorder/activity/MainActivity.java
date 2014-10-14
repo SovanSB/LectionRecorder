@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.LoaderManager;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
@@ -24,17 +26,11 @@ import com.elegion.android_school.sovan.lectionrecorder.loader.AsyncTaskLoader;
 import com.elegion.android_school.sovan.lectionrecorder.receiver.TaskReceiver;
 import com.elegion.android_school.sovan.lectionrecorder.tasks.RecorderTask;
 
-//import java.util.ArrayList;
-//import java.util.Calendar;
-//import java.util.Collections;
-import java.util.List;
 
-
-public class MainActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor>{
+public class MainActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private AlarmManager alarmMgr;
     private PendingIntent alarmIntent;
-   // private List<RecorderTask> mTaskList;
 
     // Shared Preferences file name
     public static final String APP_PREFERENCES = "mysettings";
@@ -65,6 +61,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
 
 
     public void onCreateTaskClick(View view) {
+
         Intent intent = new Intent(this, TaskCreatorActivity.class);
         startActivityForResult(intent, R.id.DATE_TIME_SET);
 
@@ -74,15 +71,29 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
     public void onAlarmClick(View view) {
 
         Context context = getApplicationContext();
+        ComponentName receiver = new ComponentName(context, TaskReceiver.class);
+        PackageManager pm = context.getPackageManager();
+
+        pm.setComponentEnabledSetting(receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP);
+
         alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, TaskReceiver.class);
-        intent.setAction(context.getString(R.string.scheldure_tasks_string));
+        intent.setAction(context.getString(R.string.schedule_tasks_string));
         alarmIntent = PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         alarmMgr.set(AlarmManager.RTC_WAKEUP, 1, alarmIntent);
 
     }
 
     public void onClearClick(View view) {
+        Context context = getApplicationContext();
+        ComponentName receiver = new ComponentName(context, TaskReceiver.class);
+        PackageManager pm = context.getPackageManager();
+
+        pm.setComponentEnabledSetting(receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP);
         ContentResolver db = getContentResolver();
         db.delete(RecorderTask.URI, null, null);
 
@@ -101,7 +112,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-            return id == R.id.action_settings;
+        return id == R.id.action_settings;
     }
 
     @Override
@@ -131,6 +142,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == R.id.DATE_TIME_SET) {
             if (resultCode == RESULT_OK) {
+
                 RecorderTask task = (RecorderTask) data.getSerializableExtra("task");
                 task.setId(mCounter);
                 mCounter++;
@@ -141,9 +153,15 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
                 db.insert(RecorderTask.URI, task.toValues());
 
                 Context context = getApplicationContext();
+                ComponentName receiver = new ComponentName(context, TaskReceiver.class);
+                PackageManager pm = context.getPackageManager();
+
+                pm.setComponentEnabledSetting(receiver,
+                        PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                        PackageManager.DONT_KILL_APP);
                 alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
                 Intent intent = new Intent(context, TaskReceiver.class);
-                intent.setAction(context.getString(R.string.scheldure_tasks_string));
+                intent.setAction(context.getString(R.string.schedule_tasks_string));
                 alarmIntent = PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT);
                 alarmMgr.set(AlarmManager.RTC_WAKEUP, 1, alarmIntent);
             }
@@ -175,8 +193,6 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
         alarmMgr.set(AlarmManager.RTC_WAKEUP, 1, alarmIntent);
         Toast.makeText(this, "All later tasks are now stopped", Toast.LENGTH_SHORT).show();
     }
-
-
 
 
 }
