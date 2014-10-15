@@ -29,10 +29,6 @@ public class TaskListAdapter extends ResourceCursorAdapter {
                 CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
     }
 
-//    public void setSelectedId(int selectedId) {
-//        mSelectedId = selectedId;
-//        notifyDataSetChanged();
-//    }
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {

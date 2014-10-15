@@ -16,6 +16,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -27,7 +29,8 @@ import com.elegion.android_school.sovan.lectionrecorder.receiver.TaskReceiver;
 import com.elegion.android_school.sovan.lectionrecorder.tasks.RecorderTask;
 
 
-public class MainActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor>,
+        AdapterView.OnItemClickListener {
 
     private AlarmManager alarmMgr;
     private PendingIntent alarmIntent;
@@ -63,12 +66,13 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
     public void onCreateTaskClick(View view) {
 
         Intent intent = new Intent(this, TaskCreatorActivity.class);
+        intent.setAction(getString(R.string.new_task_string));
         startActivityForResult(intent, R.id.DATE_TIME_SET);
 
 
     }
 
-    public void onAlarmClick(View view) {
+    public void onScheduleTasksClick(View view) {
 
         Context context = getApplicationContext();
         ComponentName receiver = new ComponentName(context, TaskReceiver.class);
@@ -166,12 +170,44 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
                 alarmMgr.set(AlarmManager.RTC_WAKEUP, 1, alarmIntent);
             }
         }
+        else
+        if (requestCode == R.id.EDIT_ITEM) {
+            if (resultCode == RESULT_OK) {
+                String action_code = data.getAction();
+                if (getString(R.string.edit_task_string).equals(action_code)) {
+                    RecorderTask task = (RecorderTask) data.getSerializableExtra("task");
+                    ContentResolver db = getContentResolver();
+                    db.update(RecorderTask.URI, task.toValues(), RecorderTask.Columns.ID + "=?",
+                            new String[]{Integer.toString(task.getId())});
+                    Context context = getApplicationContext();
+                    ComponentName receiver = new ComponentName(context, TaskReceiver.class);
+                    PackageManager pm = context.getPackageManager();
+
+                    pm.setComponentEnabledSetting(receiver,
+                            PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                            PackageManager.DONT_KILL_APP);
+                    alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                    Intent intent = new Intent(context, TaskReceiver.class);
+                    intent.setAction(context.getString(R.string.schedule_tasks_string));
+                    alarmIntent = PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+                    alarmMgr.set(AlarmManager.RTC_WAKEUP, 1, alarmIntent);
+                }
+                else
+                if (getString(R.string.delete_task_string).equals(action_code)) {
+                    RecorderTask task = (RecorderTask) data.getSerializableExtra("task");
+                    ContentResolver db = getContentResolver();
+                    db.delete(RecorderTask.URI, RecorderTask.Columns.ID + "=?",
+                            new String[]{Integer.toString(task.getId())});
+                }
+            }
+        }
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
+        mListView.setOnItemClickListener(null);
         SharedPreferences.Editor editor = mSettings.edit();
         editor.putInt(APP_PREFERENCES_COUNTER, mCounter);
         editor.apply();
@@ -180,7 +216,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
     @Override
     protected void onResume() {
         super.onResume();
-
+        mListView.setOnItemClickListener(this);
         mCounter = mSettings.getInt(APP_PREFERENCES_COUNTER, 1);
     }
 
@@ -195,4 +231,13 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
     }
 
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Intent taskIntent = new Intent(this, TaskCreatorActivity.class);
+        Cursor cursor = (Cursor) mTaskListAdapter.getItem(position);
+        RecorderTask task = TaskReceiver.getTask(cursor);
+        taskIntent.putExtra("task", task);
+        taskIntent.setAction("edit_task");
+        startActivityForResult(taskIntent, R.id.EDIT_ITEM);
+    }
 }

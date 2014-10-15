@@ -193,7 +193,6 @@ public class RecorderIntentService extends IntentService {
             }
 
         }
-        //  stopSelf();
 
 
     }

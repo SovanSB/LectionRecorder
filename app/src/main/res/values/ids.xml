@@ -2,4 +2,5 @@
 <resources>
     <item name="recorder_manager" type="id">15616</item>
     <item name="DATE_TIME_SET" type="id">1</item>
+    <item name="EDIT_ITEM" type="id">42</item>
 </resources>

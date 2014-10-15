@@ -32,7 +32,7 @@
         android:layout_above="@+id/listView"
         android:layout_toRightOf="@+id/button"
         android:layout_toEndOf="@+id/button"
-        android:onClick="onAlarmClick"/>
+        android:onClick="onScheduleTasksClick"/>
 
     <Button
         android:layout_width="wrap_content"

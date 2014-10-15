@@ -9,5 +9,8 @@
     <string name="title_activity_task_creator_activity">TaskCreatorActivity</string>
     <string name="schedule_tasks_string">schedule_tasks</string>
     <string name="stop_all_tasks">stop_all_tasks</string>
+    <string name="edit_task_string">edit_task</string>
+    <string name="new_task_string">new_task</string>
+    <string name="delete_task_string">delete_task</string>
 
 </resources>

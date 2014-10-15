@@ -1,30 +1,40 @@
 package com.elegion.android_school.sovan.lectionrecorder.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 import com.elegion.android_school.sovan.lectionrecorder.R;
+import com.elegion.android_school.sovan.lectionrecorder.adapter.TaskListAdapter;
+import com.elegion.android_school.sovan.lectionrecorder.pickers.DatePickerFragment;
+import com.elegion.android_school.sovan.lectionrecorder.pickers.TimePickerFragment;
 import com.elegion.android_school.sovan.lectionrecorder.tasks.RecorderTask;
 
-public class TaskCreatorActivity extends Activity implements AdapterView.OnItemSelectedListener {
+public class TaskCreatorActivity extends FragmentActivity implements AdapterView.OnItemSelectedListener,
+        TimePickerFragment.TimePickerDialogListener, DatePickerFragment.DatePickerDialogListener {
 
     private String array_spinner[];
     private Spinner mSpinnerPeriod;
@@ -34,13 +44,21 @@ public class TaskCreatorActivity extends Activity implements AdapterView.OnItemS
     private EditText mEditTitle;
     private EditText mEditDuration;
     private RadioButton mRadioButton;
-    private DatePicker mDatePicker;
-    private TimePicker mTimePicker;
 
 
     private long mPeriodInterval = DateUtils.SECOND_IN_MILLIS;
     private long mDurationInterval = DateUtils.SECOND_IN_MILLIS;
 
+    TextView mTvTime;
+    TextView mTvDate;
+    Button mButtonDelete;
+
+    long mTimeInMillis = 0;
+    long mDateInMillis = 0;
+
+    int mId = 1;
+    boolean isEdited = false;
+    RecorderTask mTask;
 
 
     @Override
@@ -71,9 +89,19 @@ public class TaskCreatorActivity extends Activity implements AdapterView.OnItemS
         mEditTitle = (EditText) findViewById(R.id.editTitle);
 
         mRadioButton = (RadioButton) findViewById(R.id.radioPeriodical);
-        mDatePicker = (DatePicker) findViewById(R.id.datePicker);
-        mTimePicker = (TimePicker) findViewById(R.id.timePicker);
 
+        mTvTime = (TextView) findViewById(R.id.tvTime);
+        mTvDate = (TextView) findViewById(R.id.tvDate);
+
+        mButtonDelete = (Button) findViewById(R.id.buttonDelete);
+
+        Intent intent = getIntent();
+        if (intent.getAction().equals(getString(R.string.edit_task_string))) {
+            mTask = (RecorderTask) intent.getSerializableExtra("task");
+            if (mTask != null) {
+                setTask(mTask);
+            }
+        }
     }
 
 
@@ -170,11 +198,7 @@ public class TaskCreatorActivity extends Activity implements AdapterView.OnItemS
 
     public void onOkButtonClick(View view) {
         String title = mEditTitle.getText().toString();
-        long currentMillis = Calendar.getInstance().getTimeInMillis();
-        long currentSystem = System.currentTimeMillis();
-        Calendar calendar = new GregorianCalendar(mDatePicker.getYear(), mDatePicker.getMonth(),
-                mDatePicker.getDayOfMonth(), mTimePicker.getCurrentHour(), mTimePicker.getCurrentMinute());
-        long startTime = calendar.getTimeInMillis();
+        long startTime = mTimeInMillis + mDateInMillis;
         long period = 0;
         boolean isPeriodical = mRadioButton.isChecked();
         long runningTime = 1000;
@@ -189,12 +213,13 @@ public class TaskCreatorActivity extends Activity implements AdapterView.OnItemS
         if (!isPeriodical || runningTime < period) {
             RecorderTask task;
             String root = Environment.getExternalStorageDirectory().toString();
-            File folder = new File(root + "/Recordings2/");
+           // File folder = new File(root + "/Recordings2/");
 
-            task = new RecorderTask(title, 1, root + "/Recordings2/" + title + "/", title,
+            task = new RecorderTask(title, mId, root + "/Recordings2/" + title + "/", title,
                     startTime, runningTime, period, isPeriodical);
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra("task", task);
+            intent.setAction(getString(R.string.edit_task_string));
             this.setResult(RESULT_OK, intent);
             finish();
         }
@@ -222,6 +247,93 @@ public class TaskCreatorActivity extends Activity implements AdapterView.OnItemS
         Intent intent = new Intent(this, MainActivity.class);
         this.setResult(RESULT_CANCELED, intent);
         finish();
+    }
+
+    public void onDeleteButtonClick(View view) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("task", mTask);
+        intent.setAction(getString(R.string.delete_task_string));
+        this.setResult(RESULT_OK, intent);
+        finish();
+    }
+
+    public void inputStartTime(View v) {
+        DialogFragment newFragment = new TimePickerFragment();
+        newFragment.show(getSupportFragmentManager(), "timePicker");
+
+    }
+
+    @Override
+    public void onTimeSet(long time) {
+        // TODO Auto-generated method stub
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.set(GregorianCalendar.HOUR_OF_DAY, (int)(time / DateUtils.HOUR_IN_MILLIS));
+        calendar.set(GregorianCalendar.MINUTE,
+                (int)((time % DateUtils.HOUR_IN_MILLIS) / DateUtils.MINUTE_IN_MILLIS));
+        mTvTime.setText("Starting time: " + timeFormat.format(calendar.getTime()));
+        mTimeInMillis = time;
+        Log.i("TimePicker", "Time picker set!");
+    }
+
+    @Override
+    public void onDateSet(long date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MMM/yyyy");
+        mTvDate.setText("Starting date: " + dateFormat.format(new Date(date)));
+        mDateInMillis = date;
+    }
+
+    public void inputStartDate(View v) {
+        DialogFragment newFragment = new DatePickerFragment();
+        newFragment.show(getSupportFragmentManager(), "datePicker");
+
+    }
+
+    private void setTask(RecorderTask task) {
+        isEdited = true;
+        mId = task.getId();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MMM/yyyy");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.setTimeInMillis(task.getStartTime());
+
+
+        mButtonDelete.setEnabled(true);
+        mTimeInMillis = calendar.get(GregorianCalendar.HOUR_OF_DAY) * DateUtils.HOUR_IN_MILLIS +
+                calendar.get(GregorianCalendar.MINUTE) * DateUtils.MINUTE_IN_MILLIS;
+        mTvTime.setText("Starting time: " + timeFormat.format(calendar.getTime()));
+        mTvDate.setText("Starting date: " + dateFormat.format(new Date(task.getStartTime())));
+        mDateInMillis = task.getStartTime() - mTimeInMillis;
+        mEditTitle.setText(task.getTitle());
+        //mEditDuration.setText(Long.toString(task.getRunningTime()));
+        if (task.isPeriodical()) {
+            mRadioButton.setChecked(true);
+            mSpinnerPeriod.setEnabled(true);
+            onItemSelected(mSpinnerPeriod, null, returnSpinnerIndex(task.getPeriod()),
+                    returnSpinnerIndex(task.getPeriod()));
+            mSpinnerPeriod.setSelection(returnSpinnerIndex(task.getPeriod()));
+            mEditPeriod.setEnabled(true);
+            mEditPeriod.setText(Long.toString(task.getPeriod() / mPeriodInterval));
+        }
+        mSpinnerDuration.setSelection(returnSpinnerIndex(task.getRunningTime()));
+        onItemSelected(mSpinnerDuration, null, returnSpinnerIndex(task.getRunningTime()),
+                returnSpinnerIndex(task.getRunningTime()));
+        mEditDuration.setText(Long.toString(task.getRunningTime() / mDurationInterval));
+    }
+
+    private int returnSpinnerIndex(long time) {
+        if (time % DateUtils.YEAR_IN_MILLIS == 0)
+            return 5;
+        if (time % DateUtils.WEEK_IN_MILLIS == 0)
+            return 4;
+        if (time % DateUtils.DAY_IN_MILLIS == 0)
+            return 3;
+        if (time % DateUtils.HOUR_IN_MILLIS == 0)
+            return 2;
+        if (time % DateUtils.MINUTE_IN_MILLIS == 0)
+            return 1;
+        return 0;
     }
 }
 

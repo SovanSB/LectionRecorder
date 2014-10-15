@@ -19,24 +19,28 @@
             android:layout_gravity="center_horizontal"
             android:layout_weight="0.5"/>
 
-        <DatePicker
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/datePicker"
-            android:layout_gravity="center_horizontal"
-            android:calendarViewShown="false"
-            android:layout_weight="1"
-            android:spinnersShown="true"/>
 
-        <TimePicker
-            android:layout_width="wrap_content"
+
+        <TextView
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/timePicker"
-            android:layout_gravity="center_horizontal"
-            android:accessibilityLiveRegion="none"
-            style="@style/AppBaseTheme"
-            android:theme="@style/AppTheme"
-            android:layout_weight="1"/>
+            android:id="@+id/tvDate"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Press here to set starting date"
+            android:onClick="inputStartDate"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:layout_gravity="center_horizontal"/>
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvTime"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Press here to set starting time"
+            android:onClick="inputStartTime"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:layout_gravity="center_horizontal"/>
 
         <LinearLayout
             android:orientation="horizontal"
@@ -52,17 +56,18 @@
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="Periodical"
+                    android:onClick="onRadioButtonClick"
+                    android:id="@+id/radioPeriodical"/>
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="One shot"
                     android:onClick="onRadioButtonClick"
                     android:checked="true"
                     android:id="@+id/radioOneShot"/>
 
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Periodical"
-                    android:onClick="onRadioButtonClick"
-                    android:id="@+id/radioPeriodical"/>
+
 
             </RadioGroup>
 
@@ -130,6 +135,15 @@
                 android:id="@+id/button3"
                 android:layout_weight="1"
                 android:onClick="onCancelButtonClick"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delete"
+                android:enabled="false"
+                android:id="@+id/buttonDelete"
+                android:layout_weight="1"
+                android:onClick="onDeleteButtonClick"/>
+
         </LinearLayout>
 
 

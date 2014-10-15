@@ -11,6 +11,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.elegion.android_school.sovan.lectionrecorder.R;
+import com.elegion.android_school.sovan.lectionrecorder.activity.TaskCreatorActivity;
 import com.elegion.android_school.sovan.lectionrecorder.services.RecorderIntentService;
 import com.elegion.android_school.sovan.lectionrecorder.tasks.RecorderTask;
 
@@ -89,6 +90,7 @@ public class TaskReceiver extends BroadcastReceiver {
                 alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, 1, alarmIntent);
                 Log.e("BOOT_COMPLETED", " successfully");
             }
+
         }
     }
 
@@ -126,7 +128,7 @@ public class TaskReceiver extends BroadcastReceiver {
 
     }
 
-    private RecorderTask getTask(Cursor c) {
+    public static RecorderTask getTask(Cursor c) {
         String title = c.getString(c.getColumnIndex(RecorderTask.Columns.TITLE));
         String path = c.getString(c.getColumnIndex(RecorderTask.Columns.PATH));
         String fileName = c.getString(c.getColumnIndex(RecorderTask.Columns.FILE_NAME));
